@@ -1,0 +1,67 @@
+---
+title: "Genome size of sequenced genomes available on NCBI"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## R Markdown
+
+This is an R Markdown document to create plots of data on genome size from NCBI (as of 20.06.19). Here I plot genome size against the year it was released for all the genomes available on NCBI. I also plot the distribution of log genome size using a kernel denisty function.
+
+
+```{r, echo=FALSE}
+setwd("/Users/stapley/Dropbox/Gsize")
+
+library(png)
+library(RCurl)
+
+dat = read.table("NCBI_eukaryotes.txt", header = TRUE)
+dat$l.Gsize = log(dat$G.Size.Mb)
+axolotl<- readPNG("../Axolotl_59343-200.png")
+```
+
+## Sequenced genome size over time for different taxonomic groups
+
+Genomes on NCBI have been getting bigger. The Axolotl genome is the largest. 
+Function to position and size the image from  https://scrogster.wordpress.com/2014/06/02/adding-phylopic-org-silhouettes-to-r-plots/ 
+
+```{r}
+logoing_func<-function(logo, x, y, size){
+  dims<-dim(logo)[1:2] #number of x-y pixels for the logo (aspect ratio)
+  AR<-dims[1]/dims[2]
+  par(usr=c(1, 0, 0, 1)) # top right corner
+  rasterImage(logo, x-(size/2), y-(AR*size/2), x+(size/2), y+(AR*size/2), interpolate=TRUE)
+}
+
+
+par(bty="l")
+plot(G.Size.Mb~year, typ="n", dat, ylab="Genome Size (Mb)", xlab="Year", ylim=c(0,37000))
+points(G.Size.Mb~year, pch=19, subset(dat, dat$group1=="Plants"), col="dark green")
+points(G.Size.Mb~I(year+0.25), pch=19, subset(dat, dat$group1=="Animals"), col="blue")
+points(G.Size.Mb~I(year+0.5), pch=19, subset(dat, dat$group1=="Fungi"), col="orange")
+points(G.Size.Mb~I(year+0.75), pch=19, subset(dat, dat$group1=="Protists"), col="red")
+logoing_func(axolotl, x=0.10, y=0.90, size=0.15)
+
+```
+
+## Distribution of sequenced genome sizes for different taxonomic groups
+
+```{r}
+plants <-  subset(dat, dat$group1=="Plants")
+animals <-  subset(dat, dat$group1=="Animals")
+fungi <- subset(dat, dat$group1=="Fungi")
+protists <- subset(dat, dat$group1=="Protists")
+
+par(bty="l")
+plot(density(dat$l.Gsize), ylab="", col="white", main="Log genome size", ylim=c(0,1))
+lines(density(plants$l.Gsize), col="dark green")
+lines(density(animals$l.Gsize), col="blue")
+lines(density(fungi$l.Gsize), col="orange")
+lines(density(protists$l.Gsize),col="red")
+
+
+```
+
