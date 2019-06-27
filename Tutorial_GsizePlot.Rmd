@@ -13,14 +13,14 @@ This is an R Markdown document to create plots of data on genome size from NCBI 
 
 
 ```{r, echo=FALSE}
-setwd("/Users/stapley/Dropbox/Gsize")
+setwd([My Directory])
 
 library(png)
 library(RCurl)
 
 dat = read.table("NCBI_eukaryotes.txt", header = TRUE)
 dat$l.Gsize = log(dat$G.Size.Mb)
-axolotl<- readPNG("../Axolotl_59343-200.png")
+axolotl<- readPNG("Axolotl_59343-200.png")
 ```
 
 ## Sequenced genome size over time for different taxonomic groups
