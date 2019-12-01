@@ -13,7 +13,7 @@ This is an R Markdown document to create plots of data on genome size from NCBI 
 
 
 ```{r, echo=FALSE}
-dat = read.table("data/NCBI_eukaryotes.txt", header = TRUE)
+dat = read.table("NCBI_eukaryotes.txt", header = TRUE)
 dat$l.Gsize = log(dat$G.Size.Mb)
 
 ```
